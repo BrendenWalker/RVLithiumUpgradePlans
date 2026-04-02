@@ -1,5 +1,7 @@
 ## 🧾 RV Electrical Upgrade – Phase 1 Plan (Markdown Summary)
 
+**Docs in repo:** `124067-Orion_XS_DC-DC_battery_charger-pdf-en.pdf` (Orion XS), `PD4600-110197F-owners-manual.pdf` (Progressive Dynamics PD family — match to your PD4655V label). Summary: `electric info.txt`.
+
 ---
 
 ## 🧠 Overview

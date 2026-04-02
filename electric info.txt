@@ -1,6 +1,6 @@
 2020 Four Winds 23U
 
-House batteries: 2x Duracell SL127MDC Group 27, 90AH each; installed July 2022
+House batteries (current): 2x Duracell SL127MDC Group 27, 90AH each; installed July 2022
   12.5" x 6.75" x 9.375" deep
 
 G24 10 1/4"        6 13/16"       8 7/8"
@@ -10,115 +10,40 @@ G34 10 1/4"        6 13/16"       7 7/8"
 battery box opening 7 3/8" x 22"
 battery box tray: 27 3/8" x 7 3/8" roughly 8.5" clearance
 
-Converter (current): WFCO 8955PEC
-Planned: replace PDU with Progressive Dynamics lithium-capable unit (e.g. PD4655WV or same
-  series/family that matches the coach -- confirm part number at order time).
-  Requirement: house lithium batteries MUST be LiFePO4 packs with an integrated BMS on each
-  battery (or each parallel group as specified by the battery manufacturer). The PD "Lithium"
-  charge profile is for BMS-protected drop-in batteries; it does not replace a BMS on raw cells.
-  Shore/generator charging: PD lithium profile. Alternator: separate DC-DC charger (see below).
-https://www.etrailer.com/Accessories-and-Parts/Progressive-Dynamics/PD4655V.html
+--- Phase 1 (installed / purchased) ---
 
+PDU / shore charging: Progressive Dynamics PD4655V converter-charger (replaces WFCO 8955PEC).
+  Lithium-capable; use LiFePO4 mode when house bank is lithium. Integrated BMS required on packs.
+  Reference: PD4600-110197F-owners-manual.pdf (PD family; confirm against your exact model label).
+  Listing: https://www.etrailer.com/Accessories-and-Parts/Progressive-Dynamics/PD4655V.html
 
-Alternator: 155A (factory). ~70A DC-DC from alternator to house is a reasonable starting size.
-LiFePO4 battery max charge often spec'd ~0.5C (50% of amp-hours); confirm per battery.
+Alternator / DC-DC: Victron Orion XS DC-DC battery charger (Orion XS 1400 series).
+  Manual: 124067-Orion_XS_DC-DC_battery_charger-pdf-en.pdf
+  Input/output current limit 1--50A (0.1A steps); engine shutdown detection via VictronConnect;
+  IP65; Bluetooth + VE.Direct. Set input current limit for alternator protection.
+  Install / wiring detail: phase1.md, Phase 1 Wiring Diagram.md
 
-Chassis charging: the battery BMS protects the *cells* (voltage/current/temp); it does *not*
-  replace a DC-DC (or similar) charge controller for the alternator path. Lithium can accept
-  high charge current for a long time, which can overload/overheat the alternator; a DC-DC
-  charger limits output current and matches charging to the house bank. Do not rely on "just
-  a fuse" or the BMS alone for alternator protection.
-DC-DC options (pick one; follow that unit's manual for input, output, D+/ignition, grounding):
-  Renogy DCC1212 series (example listing): https://www.amazon.com/dp/B07Z4GSYC2
-    Manual in repo: DC-DC_Renogy.pdf -- all grounds may share a common point per their diagram.
-  LiTime 12V 60A DC-DC battery charger (alternate):
-    https://www.litime.com/products/litime-12v-60a-dc-dc-battery-charger
-    ~60A output (LC port can limit to ~30A); LFP profile ~14.6V per LiTime specs; input/output
-    isolated per product description; ignition / vehicle port for smart alternator per manual.
-    User manual: LiTime site (User Manual PDF on product page). Good pairing if also using
-    LiTime house batteries; compare dimensions (~13.6 x 8.5 x 3.4 in) vs install space.
-  Victron Orion XS (example listing): https://www.amazon.com/dp/B0F43Z9R53
-    Manual in repo: 124067-Orion_XS_DC-DC_battery_charger-pdf-en.pdf (Rev 01/2026; "Orion XS 1400"
-      DC-DC battery charger -- confirm your hardware matches this document).
-    Highlights vs Renogy/LiTime: **IP65** (dust-tight, heavy rain per manual), no cooling fan,
-      buck-boost with wide input/output (spec sheet: input 9--35V, output 10--35V), Bluetooth +
-      VE.Direct (GX/VRM/DVCC possible). **Engine shutdown detection** uses starter-battery /
-      alternator voltage ramps so you often **do not** need a separate D+ or ignition wire for
-      "engine running" -- configurable in VictronConnect; can be **disabled** with override
-      (e.g. >8V on L-pin per manual) or remote on/off. **Euro 5/6 caveat:** smart alternators
-      can cut charging while driving; manual warns auxiliary battery may undercharge -- may
-      need to tune thresholds, disable engine detection and use remote on/off, or other
-      strategies (see manual section "Setup for Euro 6 vehicles").
-    **Current:** input and output limits adjustable **1--50A** (0.1A steps) -- tops out **below**
-      the earlier ~70A planning note; at ~12V, continuous power is far below the 1400W nameplate
-      (manual: power ~ V x I, e.g. 12V x 50A = 600W). Set input current limit to protect the
-      alternator. **Fusing/cable:** manual table for ~60--70A fuse: 16mm2/6AWG if <5m, 4AWG if
-      5--10m (adjust if your design uses different current).
-    **Lithium:** VictronConnect battery presets; low-temperature cut-off when temp is shared
-      via VE.Smart network -- **not effective if a BMS controls the charger** (per manual).
-      Optional BMS control / Error 67 if BMS link lost.
-    **Ground:** GND lug should make **low-impedance** contact with bare chassis metal (manual).
+Alternator: 155A (factory). Orion tops out at 50A -- aligns with phase 1 plan; LiFePO4 later:
+  confirm charge C-rate with battery vendor.
 
-DC-DC install environment: Renogy/LiTime are usually **less** dust/water-protected than Orion
-  XS (IP65). Mounting in a **dry cabinet** (e.g. near the coach battery disconnect) can be
-  fine for those units **if** the space stays dry and you address **heat**: fanless chargers
-  still rely on **convection** and manufacturer **clearance** (Orion XS manual: ~10cm around
-  the unit, vertical mount, terminals down). A **stagnant** or **packed** bay will cause
-  **thermal derating** (lower sustained amps) even if the electrical install is correct. If
-  airflow is weak, options include passive **vent** paths for that compartment, avoiding
-  burying the charger in insulation, or accepting a **premium sealed** unit for harsh exposure
-  while still giving it **room to breathe**.
+House/chassis (stock): simple relay + time delay paralleled house and chassis when energized.
+  Phase 1: relay path removed; chassis battery -> Orion -> house only (see phase1.md).
 
-Solar: portable "solar suitcase" with its own charge controller; controller supports lithium
-  and connects direct to the house battery. Use the controller's LiFePO4 / lithium profile
-  (not lead-acid) when on lithium. Align absorption/float-style setpoints with the battery
-  vendor's guidance if the controller allows custom voltages. Solar is only hooked up when neither shore nor generator is feeding the coach (generator
-  takes the same inlet as shore -- mutually exclusive). Never solar at the same time as PD
-  charging from shore or gen, so no overlap with the converter on the same bank.
+Solar: portable suitcase + own controller; Li profile when on lithium. Do not connect while on
+  shore or generator (same 120V bus as PD charging).
 
-House/chassis isolation (stock): a **simple relay with a time delay** that connects house and
-  chassis batteries when energized (not a microprocessor-based isolator).
-Phase 1 / alternator path (see phase1.md): remove that **direct parallel** relay path. Run
-  DC-DC **input + and -** from the **chassis (starter) battery** (fused, per charger manual);
-  DC-DC **output** to the house bank. All driving-time charge from the alternator to the house
-  goes **only** through the DC-DC (no bypass around it). The old relay wiring is removed or
-  left disconnected per install plan.
-Ignition / enable: depends on charger -- Renogy D+ (DC-DC_Renogy.pdf); LiTime vehicle port;
-  Victron Orion XS often uses **engine shutdown detection** in software (manual). Optional
-  ignition or override later if needed.
-Stock behavior (before rewire): relay closed when energized parallels banks for charging /
-  boost per OEM. Shore power may also charge chassis depending on coach wiring. After rewire:
-  driving path is chassis battery -> DC-DC -> house. Tradeoffs (e.g. chassis maintenance from
-  shore, emergency parallel) depend on what the relay used to do -- confirm against schematics.
+23U schematics: model matches; verify against build. Loads: 12VoltPowerInfo.ods
 
-23U schematics: model matches; verify against actual build -- some options on drawings may
-  not be installed (e.g. inverter). Load/usage spreadsheet: 12VoltPowerInfo.ods (still current).
+--- Future: LiFePO4 house batteries (not phase 1) ---
 
-*** build your own battery
-http://powerwholesale.net/
-https://diysolarforum.com/forums/diy-lifepo4-battery-banks.22/
-https://learntorv.com/diy-lithium-batteries/
+Requirement: integrated BMS per battery (or per manufacturer parallel rules). PD Li mode +
+  Orion lithium presets when you switch banks.
 
-Preferred house battery (likely): Epoch Essentials 12V 300Ah heated + Bluetooth LiFePO4
+Epoch 12V 300Ah Essentials (heated, Bluetooth) -- candidate
   https://www.epochbatteries.com/products/12v-300ah-heated-bluetooth-lifepo4-battery-epoch-essentials
-  Rationale: strong $/Ah for 300Ah, integrated BMS, Bluetooth (can remove shunt/gauge for
-  house SoC if the app is enough for your workflow -- confirm chassis/start monitoring needs).
-  Dimensions (manufacturer / prior notes):
-    Length 13.75" at base, 15.5" at handles
-    Width 7.63"
-    Height 10.0" or 10.5" with terminal bolts
-    Weight ~58#
-  Fitment: verify on coach before order -- battery box opening noted above is 7 3/8" x 22";
-    Epoch width ~7.63" is slightly wider than 7 3/8" on paper; measure actual opening, tray,
-    and cable clearance. Length 22" opening vs ~15.5" max length should be OK if width works.
+  ~13.75" base / 15.5" handles, 7.63" W, ~10--10.5" H -- confirm fit vs box opening.
 
-Alternate (budget / easy fit): LiTime 12V 230Ah Bluetooth LiFePO4 (RV)
+LiTime 12V 230Ah Bluetooth (RV) -- alternate / easier fit
   https://www.litime.com/products/12v-230ah-bluetooth-lithium-rv-battery
-  Much cheaper than Epoch; non-heated; ~230Ah vs 300Ah. Bluetooth (same shunt/gauge
-  simplification idea as Epoch). Expected to fit easily with room to spare -- still confirm
-  dimensions and BMS compatibility with PD lithium profile before purchase.
-  LiTime: https://www.litime.com
 
-https://battlebornbatteries.com/product/battle-born-energy-motorized-30a-kit/?srsltid=AfmBOoq8n7z9qqYFf15jB0G3u4otVmQhd67dUnSBOmiIk8cqtj6wVqpY
-
-https://www.bestconverter.com/Progressive-Dynamics-Converters_c_81.html
+Coach reference PDFs: 23u_schematics.pdf, electrical_system.pdf
