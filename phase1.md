@@ -1,6 +1,6 @@
 ## 🧾 RV Electrical Upgrade – Phase 1 Plan (Markdown Summary)
 
-**Docs in repo:** `124067-Orion_XS_DC-DC_battery_charger-pdf-en.pdf` (Orion XS), `PD4600-110197F-owners-manual.pdf` (Progressive Dynamics PD family — match to your PD4655V label). Summary: `electric info.txt`.
+**Docs in repo:** `124067-Orion_XS_DC-DC_battery_charger-pdf-en.pdf` (Orion XS), `PD4600-110197F-owners-manual.pdf` (PD4655 and related — **page 2** lists models including **4655** replacing **WFCO 8955**). Summary: `electric info.txt`.
 
 ---
 
@@ -31,7 +31,7 @@ Key goals:
 ### Shore Power Charging
 - Progressive Dynamics PD4655V Converter Charger
 - Lithium-compatible mode (switchable)
-- Direct replacement for existing converter
+- Direct replacement for the stock **WFCO 8955** per PD manual (**page 2**, model table)
 
 ---
 

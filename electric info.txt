@@ -14,7 +14,8 @@ battery box tray: 27 3/8" x 7 3/8" roughly 8.5" clearance
 
 PDU / shore charging: Progressive Dynamics PD4655V converter-charger (replaces WFCO 8955PEC).
   Lithium-capable; use LiFePO4 mode when house bank is lithium. Integrated BMS required on packs.
-  Reference: PD4600-110197F-owners-manual.pdf (PD family; confirm against your exact model label).
+  Manual: PD4600-110197F-owners-manual.pdf — covers the **PD4655** (among others); see **page 2**
+  for model coverage and that the **4655** replaces the **WFCO 8955**-class unit.
   Listing: https://www.etrailer.com/Accessories-and-Parts/Progressive-Dynamics/PD4655V.html
 
 Alternator / DC-DC: Victron Orion XS DC-DC battery charger (Orion XS 1400 series).
