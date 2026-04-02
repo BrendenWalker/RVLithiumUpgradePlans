@@ -1,4 +1,4 @@
-2020 Fair Winds 23U
+2020 Four Winds 23U
 
 House batteries: 2x Duracell SL127MDC Group 27, 90AH each; installed July 2022
   12.5" x 6.75" x 9.375" deep
@@ -8,6 +8,7 @@ G27 12 1/16" long, 6 13/16" wide, 8 7/8" height
 G34 10 1/4"        6 13/16"       7 7/8"
 
 battery box opening 7 3/8" x 22"
+battery box tray: 27 3/8" x 7 3/8" roughly 8.5" clearance
 
 Converter (current): WFCO 8955PEC
 Planned: replace PDU with Progressive Dynamics lithium-capable unit (e.g. PD4655WV or same
@@ -75,25 +76,20 @@ Solar: portable "solar suitcase" with its own charge controller; controller supp
   takes the same inlet as shore -- mutually exclusive). Never solar at the same time as PD
   charging from shore or gen, so no overlap with the converter on the same bank.
 
-BIM: likely Precision Circuits BIM 160 (not yet located on coach). Manual in repo:
-  Precision Circuits BIM 160-Rev7-1.pdf.
-Planned topology (alternator / chassis to house): remove the *direct* BIM-to-house-battery
-  connection. Wire the BIM *coach* terminal (the large terminal that used to go straight to
-  house +) to the DC-DC *input* + only. DC-DC input - to chassis / starter negative per chosen
-  charger manual. DC-DC output to house lithium + / -. When the BIM closes, it connects DC-DC
-  input + to the chassis battery + the same way it used to parallel the banks -- but with no
-  parallel jumper to the house pack, all alternator energy to the house goes through the
-  DC-DC only (no bypass path). When the BIM opens, the DC-DC input + is no longer tied to the
-  starter battery; charger stays off unless input + and D+/ignition conditions are met per that
-  unit's manual. Confirm with BIM + DC-DC docs that the coach-side load may be a DC-DC input
-  (not a plain battery) and that fusing / wire gauge still match BIM ratings.
-Ignition / enable: Renogy needs D+ to a run/ignition 12V source (DC-DC_Renogy.pdf). LiTime
-  uses a vehicle ignition port for smart alternator (see LiTime manual). The BIM does not
-  replace that wire; optional same ignition tap as BIM if appropriate for the chosen charger.
-Current behavior (stock): chassis alternator path charges house bank; on shore power the coach
-  system also charges the chassis battery. After rewire: driving charge path is BIM (when closed)
-  -> DC-DC -> house only. Still accept losing: chassis from coach on shore and starter-boost,
-  per prior plan.
+House/chassis isolation (stock): a **simple relay with a time delay** that connects house and
+  chassis batteries when energized (not a microprocessor-based isolator).
+Phase 1 / alternator path (see phase1.md): remove that **direct parallel** relay path. Run
+  DC-DC **input + and -** from the **chassis (starter) battery** (fused, per charger manual);
+  DC-DC **output** to the house bank. All driving-time charge from the alternator to the house
+  goes **only** through the DC-DC (no bypass around it). The old relay wiring is removed or
+  left disconnected per install plan.
+Ignition / enable: depends on charger -- Renogy D+ (DC-DC_Renogy.pdf); LiTime vehicle port;
+  Victron Orion XS often uses **engine shutdown detection** in software (manual). Optional
+  ignition or override later if needed.
+Stock behavior (before rewire): relay closed when energized parallels banks for charging /
+  boost per OEM. Shore power may also charge chassis depending on coach wiring. After rewire:
+  driving path is chassis battery -> DC-DC -> house. Tradeoffs (e.g. chassis maintenance from
+  shore, emergency parallel) depend on what the relay used to do -- confirm against schematics.
 
 23U schematics: model matches; verify against actual build -- some options on drawings may
   not be installed (e.g. inverter). Load/usage spreadsheet: 12VoltPowerInfo.ods (still current).
